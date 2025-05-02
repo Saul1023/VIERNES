@@ -1,0 +1,29 @@
+.container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-image: url(
+    '/assets/fondo.jpg'      
+        );
+    }
+/*    'https://as2.ftcdn.net/jpg/02/94/37/55/1000_F_294375555_tpcdo43DC1XFr6kpSv4v4bEsmcY1GgWz.jpg'
+*/
+.example-card{
+    width: 500px;
+    background-color: rgba(250, 250, 250, 0.3);
+    backdrop-filter: blur(23);
+}
+.example-full-width{
+    width: 100%;
+}
+.subir{
+    margin-top: -130px;
+    background-color: rgb(141, 82, 6);
+}
+.warning{
+    background-color: rgb(218, 163, 163);
+    color: brown;
+    margin: 5px;
+    margin-bottom: 20px;
+}

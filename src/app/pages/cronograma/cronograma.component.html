@@ -1,0 +1,64 @@
+<h2>Cronograma</h2>
+<div>
+
+
+<button mat-fab aria-label="agregar item" (click)="nuevo()">
+    <mat-icon>add</mat-icon>
+  </button>
+
+  <input  matInput [formControl]="search" name="search"
+  (input)="buscar($event)">
+</div>
+@if(error()!==''){
+<div class="error">
+    {{error()}}
+</div>
+}
+<table  class="table"  >
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Nombre</th>
+            <th>Fecha</th>
+            <th>Descripcion</th>
+            <th>acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for(element of itemResource.value()!;track element._id){
+        <tr  >
+            <td [class.inhabilitar]="!element.estado">{{element._id}}</td>
+            <td [class.inhabilitar]="!element.estado">{{element.actividad}}</td>
+            <td [class.inhabilitar]="!element.estado">{{element.fecha}}</td>
+            <td [class.inhabilitar]="!element.estado">{{element.descripcion}}</td>
+                {{element.estado}}
+            <td>
+                @if(element.estado){
+                <button (click)="edit(element)" mat-icon-button>
+                    <mat-icon>edit</mat-icon>
+                </button>
+                <button (click)="delete(element)" mat-icon-button>
+                    <mat-icon>delete</mat-icon>
+                </button>
+                }
+                @else{
+                    <button (click)="habilitar(element)" mat-icon-button>
+                        <mat-icon>undo</mat-icon>
+                    </button>
+                }
+            </td>
+
+        </tr>
+        }
+    </tbody>
+</table>
+<mat-paginator [length]="total()||0"
+    [pageSize]="size()"
+    [pageSizeOptions]="[5,10,20]"
+    (page)="onPageChange($event)"
+>
+
+</mat-paginator>
+@if(isLoading()){
+<mat-spinner></mat-spinner>
+}

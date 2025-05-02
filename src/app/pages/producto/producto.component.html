@@ -1,0 +1,54 @@
+<h2>Productos</h2>
+<div>
+
+
+<button mat-fab aria-label="agregar item" (click)="nuevo()">
+    <mat-icon>add</mat-icon>
+  </button>
+
+  <input  matInput [formControl]="search" name="search"
+  (input)="buscar($event)">
+</div>
+@if(error()!==''){
+<div class="error">
+    {{error()}}
+</div>
+}
+<table  class="table"  >
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Nombre</th>
+            <th>precio</th>
+            <th>acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for(element of itemResource.value()!;track element._id){
+        <tr>
+            <td>{{element._id}}</td>
+            <td>{{element.nombre}}</td>
+            <td>{{element.precio}}</td>
+            <td>
+                <button (click)="edit(element)" mat-icon-button>
+                    <mat-icon>edit</mat-icon>
+                </button>
+                <button (click)="delete(element)" mat-icon-button>
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </td>
+            
+        </tr>
+        }
+    </tbody>
+</table>
+<mat-paginator [length]="total()||0"
+    [pageSize]="size()"
+    [pageSizeOptions]="[5,10,20]"
+    (page)="onPageChange($event)"
+>
+
+</mat-paginator>
+@if(isLoading()){
+<mat-spinner></mat-spinner>
+}

@@ -1,0 +1,36 @@
+<div class="container">
+    <mat-card class="example-card" appearance="outlined">
+        <mat-card-header>
+          <div mat-card-avatar class="example-header-image"></div>
+          <mat-card-title>SUPDS</mat-card-title>
+          <mat-card-subtitle>Bienvenido</mat-card-subtitle>
+        </mat-card-header>
+        <img mat-card-image src="/assets/cat.png" alt="Photo of a Shiba Inu">
+        <form [formGroup]="form">
+            <mat-card-content class="subir">
+                *
+                <mat-form-field class="example-full-width">
+                    <mat-label>Login</mat-label>
+                    <input matInput placeholder="julano" formControlName="email">
+                </mat-form-field>
+                <mat-form-field class="example-full-width">
+                    <mat-label>Password</mat-label>
+                    <input matInput placeholder="*****" formControlName="password">
+                </mat-form-field>
+
+                @if(msg()!=''){
+                <mat-card class="warning" appearance="outlined">
+                    <mat-card-content>{{msg()}}</mat-card-content>
+                    
+                </mat-card>
+                }
+
+            </mat-card-content>
+            <mat-card-actions>
+            <button mat-flat-button>Limpiar</button>
+            <button mat-flat-button [disabled]="form.invalid" (click)="onEntrar()" >Entrar</button>
+            </mat-card-actions>
+        </form>
+      </mat-card>
+
+</div>

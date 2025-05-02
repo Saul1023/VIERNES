@@ -1,0 +1,30 @@
+<form action="" [formGroup]="form" (submit)="enviar()" >
+    <h3>@if(!item._id){Nuevo}@else{  Editar} Unidad</h3>
+    <p>
+    <mat-form-field>
+        <mat-label>Actividad</mat-label>
+        <input matInput name="actividad" formControlName="actividad">
+    </mat-form-field>
+    </p>
+    <p>
+        <mat-form-field>
+            <mat-label>fecha</mat-label>
+            <input matInput name="fecha" formControlName="fecha" type="date">
+        </mat-form-field>
+    </p>
+    <p>
+    <mat-form-field>
+        <mat-label>Descripcion</mat-label>
+        <input matInput name="descripcion" formControlName="descripcion">
+    </mat-form-field>
+    </p>
+    @if(msg()!=''){
+        <p>
+            {{msg()}}
+        </p>
+    }
+    <p>
+    <button mat-raised-button>Limpiar</button>
+    <button mat-stroked-button [disabled]="form.invalid" >Enviar</button>
+    <p>
+</form>
