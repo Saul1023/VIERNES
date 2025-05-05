@@ -63,13 +63,8 @@ export class CandidatoService {
     );
   }
 
-  edit(id: string, item: any) {
-    return this.http.put(`${this.url}/${id}`, item).pipe(
-      catchError(error => {
-        console.error('Error al editar el candidato:', error);
-        return of(null);
-      })
-    );
+  edit(id: string, candidato: any) {
+    return this.http.put(`http://localhost:3000/candidatos/editar/${id}`, candidato);
   }
 
   delete(id: string) {

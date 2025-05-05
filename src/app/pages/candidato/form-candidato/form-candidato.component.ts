@@ -53,44 +53,57 @@ export class FormCandidatoComponent {
   });
 
   ngOnInit(): void {
+    console.log('Iniciando carga de partidos...');
     this.partidoService.getAll().subscribe({
       next: (response: any) => {
-        console.log('Respuesta del servicio:', response);
+        console.log('Respuesta del servicio de partidos:', response);
         this.partidos = response?.data?.item || response?.item || [];
+        console.log('Partidos cargados:', this.partidos);
       },
       error: (err) => {
         console.error('Error al cargar partidos:', err);
         this.showMsg('Error al cargar partidos', StatusMessage.Error);
       }
     });
+    console.log('Partidos disponibles:', this.partidos);
+    console.log('Valor actual de partidoId en form:', this.form.value.partidoId);
   }
-
+  
   enviar() {
     if (this.form.invalid) {
+      console.warn('Formulario inválido, campos requeridos no completos.');
       this.showMsg('Formulario inválido. Complete los campos requeridos.', StatusMessage.Warning);
       return;
     }
-
+  
     const itemNew = { ...this.form.getRawValue() };
-
+  
     if (itemNew.fechaNacimiento) {
       itemNew.fechaNacimiento = this.convertirFechaISO(itemNew.fechaNacimiento);
     }
-
-    const esEdicion = !!this.item?._id; // ✅ Asegura booleano
+  
+    console.log('Datos a enviar:', itemNew);
+  
+    const esEdicion = !!this.item?._id;
+    console.log('Es edición:', esEdicion);
+  
     const operacion = esEdicion
-    ? this.itemService.edit(this.item._id!, itemNew)
+      ? this.itemService.edit(this.item._id!, itemNew)
       : this.itemService.create(itemNew);
-
+  
+    console.log('Iniciando operación...', esEdicion ? 'Edición' : 'Creación');
+  
     operacion.subscribe({
       next: (res: any) => {
         console.log('Respuesta del servidor:', res);
         if (res?.success || res?.status === 'success') {
           this.showMsg(`Candidato ${esEdicion ? 'actualizado' : 'registrado'} correctamente`, StatusMessage.Success, { duration: 4000 });
+          console.log('Candidato procesado correctamente.');
           this.dialog.close(true);
         } else {
           const message = res?.message || `Error al ${esEdicion ? 'actualizar' : 'registrar'} candidato`;
           this.showMsg(message, StatusMessage.Error);
+          console.error('Error en el servidor:', message);
           this.msg.set(message);
         }
       },
@@ -100,6 +113,7 @@ export class FormCandidatoComponent {
       }
     });
   }
+  
 
   showMsg(msg: string, status: StatusMessage, config: any = {}) {
     const notificar = this._snackBar.openFromComponent(NotificarComponent, config);

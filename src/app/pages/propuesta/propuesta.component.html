@@ -1,65 +1,54 @@
-<h2>Propuesta</h2>
-<div>
-
-
-<button mat-fab aria-label="agregar item" (click)="nuevo()">
+<h2 class="text-2xl font-semibold mb-4">Propuesta</h2>
+<div class="mb-4 flex items-center space-x-4">
+  <button mat-fab aria-label="agregar item" (click)="nuevo()" class="bg-blue-500 text-white p-2 rounded-full shadow-md hover:bg-blue-600">
     <mat-icon>add</mat-icon>
   </button>
 
-  <input  matInput [formControl]="search" name="search"
-  (input)="buscar($event)">
+  <input matInput [formControl]="search" name="search" (input)="buscar($event)" 
+    class="border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-64" placeholder="Buscar...">
 </div>
-@if(error()!==''){
-<div class="error">
-    {{error()}}
-</div>
-}
-<table  class="table"  >
-    <thead>
-        <tr>
-            <th>Id</th>
-            <th>Titulo</th>
-            <th>Descripcion</th>
-            <th>Fecha</th>
-            <th>acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        @for(element of itemResource.value()!;track element._id){
-        <tr  >
-            <td [class.inhabilitar]="!element.estado">{{element._id}}</td>
-            <td [class.inhabilitar]="!element.estado">{{element.titulo}}</td>
-            <td [class.inhabilitar]="!element.estado">{{element.descripcion}}</td>
-            <td [class.inhabilitar]="!element.estado">{{element.fechaPropuesta}}</td>
-            <td [class.inhabilitar]="!element.estado">{{element.estado}}</td>
-                {{element.estado}}
-            <td>
-                @if(element.estado){
-                <button (click)="edit(element)" mat-icon-button>
-                    <mat-icon>edit</mat-icon>
-                </button>
-                <button (click)="delete(element)" mat-icon-button>
-                    <mat-icon>delete</mat-icon>
-                </button>
-                }
-                @else{
-                    <button (click)="habilitar(element)" mat-icon-button>
-                        <mat-icon>undo</mat-icon>
-                    </button>
-                }
-            </td>
 
-        </tr>
-        }
-    </tbody>
+<div *ngIf="error() !== ''" class="bg-red-500 text-white p-2 rounded-md mb-4">
+  {{ error() }}
+</div>
+
+<table class="table-auto w-full border-collapse bg-white shadow-md rounded-lg">
+  <thead class="bg-gray-100">
+    <tr>
+      <th class="py-2 px-4 text-left text-sm font-medium text-gray-600">Id</th>
+      <th class="py-2 px-4 text-left text-sm font-medium text-gray-600">Titulo</th>
+      <th class="py-2 px-4 text-left text-sm font-medium text-gray-600">Descripcion</th>
+      <th class="py-2 px-4 text-left text-sm font-medium text-gray-600">Fecha</th>
+      <th class="py-2 px-4 text-left text-sm font-medium text-gray-600">Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let element of itemResource.value(); trackBy: track">
+      <td class="py-2 px-4 text-sm text-gray-700" [class.text-gray-400]="!element.estado">{{ element._id }}</td>
+      <td class="py-2 px-4 text-sm text-gray-700" [class.text-gray-400]="!element.estado">{{ element.titulo }}</td>
+      <td class="py-2 px-4 text-sm text-gray-700" [class.text-gray-400]="!element.estado">{{ element.descripcion }}</td>
+      <td class="py-2 px-4 text-sm text-gray-700" [class.text-gray-400]="!element.estado">{{ element.fechaPropuesta }}</td>
+      <td class="py-2 px-4 text-sm text-gray-700" [class.text-gray-400]="!element.estado">{{ element.estado }}</td>
+      <td class="py-2 px-4 flex space-x-2">
+        <button *ngIf="element.estado" (click)="edit(element)" mat-icon-button
+          class="text-yellow-500 hover:text-yellow-600 p-2 rounded-full">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button *ngIf="element.estado" (click)="delete(element)" mat-icon-button
+          class="text-red-500 hover:text-red-600 p-2 rounded-full">
+          <mat-icon>delete</mat-icon>
+        </button>
+        <button *ngIf="!element.estado" (click)="habilitar(element)" mat-icon-button
+          class="text-green-500 hover:text-green-600 p-2 rounded-full">
+          <mat-icon>undo</mat-icon>
+        </button>
+      </td>
+    </tr>
+  </tbody>
 </table>
-<mat-paginator [length]="total()||0"
-    [pageSize]="size()"
-    [pageSizeOptions]="[5,10,20]"
-    (page)="onPageChange($event)"
->
 
+<mat-paginator [length]="total() || 0" [pageSize]="size()" [pageSizeOptions]="[5, 10, 20]" 
+  (page)="onPageChange($event)" class="my-4 bg-white shadow-md rounded-lg p-2">
 </mat-paginator>
-@if(isLoading()){
-<mat-spinner></mat-spinner>
-}
+
+<mat-spinner *ngIf="isLoading()" class="mx-auto my-4"></mat-spinner>
