@@ -1,51 +1,56 @@
-<form action="" [formGroup]="form" (submit)="enviar()" >
-    <h3>@if(!item._id){Nuevo}@else{  Editar} Unidad</h3>
-    <p>
+<div style="max-height: 500px; overflow-y: auto;">
+  <form action="" [formGroup]="form" (submit)="enviar()">
+    <h3 *ngIf="!item._id">Nuevo</h3>
+    <h3 *ngIf="item._id">Editar</h3>
+
     <mat-form-field>
-        <mat-label>Nombre</mat-label>
-        <input matInput name="nombre" formControlName="nombre">
+      <mat-label>Nombre</mat-label>
+      <input matInput name="nombre" formControlName="nombre">
     </mat-form-field>
-    </p>
-    <p>
-        <mat-form-field>
-            <mat-label>Apellido</mat-label>
-            <input matInput name="apellido" formControlName="apellido">
-        </mat-form-field>
-    </p>
-    <p>
-      <p>
-        <mat-form-field>
-            <mat-label>fecha</mat-label>
-            <input matInput name="fecha" formControlName="fecha" type="date">
-        </mat-form-field>
-    </p>
-    <p>
-      <mat-form-field>
-          <mat-label>Biografia</mat-label>
-          <input matInput name="biografia" formControlName="biografia">
-      </mat-form-field>
-    </p>
-    <p>
-      <mat-form-field>
-          <mat-label>Puesto</mat-label>
-          <input matInput name="puesto" formControlName="puesto">
-      </mat-form-field>
-    </p>
+
     <mat-form-field>
+      <mat-label>Apellido</mat-label>
+      <input matInput name="apellido" formControlName="apellido">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Fecha</mat-label>
+      <input matInput name="fechaNacimiento" formControlName="fechaNacimiento" type="date">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Biografía</mat-label>
+      <input matInput name="biografia" formControlName="biografia">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Puesto</mat-label>
+      <input matInput name="puesto" formControlName="puesto">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Foto (URL)</mat-label>
+      <input matInput name="foto" formControlName="foto" placeholder="https://ejemplo.com/foto.jpg">
+    </mat-form-field>
+
+    <!-- Previsualización si hay imagen -->
+    <p *ngIf="form.get('foto')?.value">
+      <img [src]="form.get('foto')?.value" alt="Foto del candidato" width="150" />
+    </p>
+
+    <mat-form-field appearance="fill">
       <mat-label>Partido</mat-label>
-      <mat-select formControlName="partidoId">
-        <mat-option *ngFor="let partido of partidos()" [value]="partido._id">
+      <mat-select formControlName="partidoId" [(value)]="partidoSeleccionado">
+        <mat-option [value]="''">Sin partido</mat-option>
+        <mat-option *ngFor="let partido of partidos" [value]="partido._id">
           {{ partido.nombre }}
         </mat-option>
       </mat-select>
     </mat-form-field>
-    @if(msg()!=''){
-        <p>
-            {{msg()}}
-        </p>
-    }
-    <p>
+
+    <p *ngIf="msg() !== ''">{{ msg() }}</p>
+
     <button mat-raised-button>Limpiar</button>
-    <button mat-stroked-button [disabled]="form.invalid" >Enviar</button>
-    <p>
-</form>
+    <button mat-stroked-button [disabled]="form.invalid">Enviar</button>
+  </form>
+</div>

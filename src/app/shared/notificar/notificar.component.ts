@@ -14,9 +14,9 @@ export  enum StatusMessage{
   selector: 'app-notificar',
   imports: [
     MatIconModule,
-    MatButtonModule, 
-    MatSnackBarLabel, 
-    MatSnackBarActions, 
+    MatButtonModule,
+    MatSnackBarLabel,
+    MatSnackBarActions,
     MatSnackBarAction,
     CommonModule
   ],

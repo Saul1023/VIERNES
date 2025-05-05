@@ -1,17 +1,45 @@
+/* Estilo para el mensaje de error */
 .error {
-    margin: 15px;
-    padding: 20px;
-    text-justify: auto;
-    align-items: center;
-    justify-content: center;
-    color: brown;
-    display: flex;
-    background-color: rgb(233, 188, 188);
-    border: 1px solid brown;
-    border-radius: 5px;
-    width: 100%;
+  margin: 15px;
+  padding: 20px;
+  text-justify: auto;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  display: flex;
+  background-color: #F8D7DA; /* Rojo claro */
+  border: 1px solid #F5C6CB; /* Borde más suave */
+  border-radius: 8px;
+  width: 100%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
-.inhabilitar{
-    background-color: rgb(150, 149, 149);
-    color: rgb(71, 71, 71);
+
+/* Estilo para los elementos deshabilitados */
+.inhabilitar {
+  background-color: rgb(220, 220, 220);
+  color: rgb(150, 150, 150);
+}
+
+/* Bordes para la tabla */
+table th, table td {
+  border-bottom: 1px solid #e0e0e0;
+}
+
+/* Bordes más suaves en las celdas */
+table td, table th {
+  padding: 16px;
+  text-align: left;
+  font-size: 0.875rem; /* Tamaño pequeño */
+  font-weight: 500;
+  color: #333;
+}
+
+/* Efectos de hover y transición */
+table tr:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+/* Estilo para el spinner */
+mat-spinner {
+  color: #3B82F6; /* Azul */
 }

@@ -1,4 +1,4 @@
-<form action="" [formGroup]="form" (submit)="enviar()" >
+<form action="" [formGroup]="form" (submit)="enviar($event)" >
     <h3>@if(!item._id){Nuevo}@else{  Editar} Unidad</h3>
     <p>
     <mat-form-field>
@@ -12,13 +12,22 @@
             <input matInput name="lema" formControlName="lema">
         </mat-form-field>
     </p>
+    <mat-form-field>
+      <mat-label>Foto (URL)</mat-label>
+      <input matInput name="foto" formControlName="foto" placeholder="https://ejemplo.com/foto.jpg">
+    </mat-form-field>
+
+    <!-- Previsualización si hay imagen -->
+    <p *ngIf="form.get('foto')?.value">
+      <img [src]="form.get('foto')?.value" alt="Foto del candidato" width="150" />
+    </p>
     @if(msg()!=''){
         <p>
             {{msg()}}
         </p>
     }
     <p>
-    <button mat-raised-button>Limpiar</button>
-    <button mat-stroked-button [disabled]="form.invalid" >Enviar</button>
+      <button type="button" mat-raised-button (click)="limpiar()">Limpiar</button>
+    <button mat-stroked-button [disabled]="form.invalid">Enviar</button>
     <p>
 </form>

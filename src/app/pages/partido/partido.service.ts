@@ -31,8 +31,8 @@ export class PartidoService {
     item.estado = item.estado || 1;
     return this.http.post(this.url, item);
   }
-  edit(id:any,item:any){
-    return this.http.put(this.url+'/'+id,item);
+  edit(id: any, item: any) {
+    return this.http.put(this.url + '/' + id, item);
   }
   delete(id:any){
     return this.http.delete(this.url+'/'+id);

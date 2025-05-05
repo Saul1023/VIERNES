@@ -1,64 +1,70 @@
-<h2>Cronograma</h2>
-<div>
+<h2 class="text-3xl font-bold mb-6 text-gray-800">Cronograma</h2>
 
-
-<button mat-fab aria-label="agregar item" (click)="nuevo()">
+<div class="flex flex-col sm:flex-row items-center gap-4 mb-6">
+  <button mat-fab aria-label="agregar item" (click)="nuevo()" class="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow transition duration-300">
     <mat-icon>add</mat-icon>
   </button>
 
-  <input  matInput [formControl]="search" name="search"
-  (input)="buscar($event)">
+  <input
+    matInput
+    [formControl]="search"
+    name="search"
+    (input)="buscar($event)"
+    placeholder="Buscar actividad..."
+    class="w-full sm:w-64 px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
+  >
 </div>
+
+<!-- Error Message -->
 @if(error()!==''){
-<div class="error">
+  <div class="text-center bg-red-100 text-red-700 border border-red-300 rounded-lg p-4 shadow-sm w-full">
     {{error()}}
-</div>
+  </div>
 }
-<table  class="table"  >
-    <thead>
-        <tr>
-            <th>Id</th>
-            <th>Nombre</th>
-            <th>Fecha</th>
-            <th>Descripcion</th>
-            <th>acciones</th>
-        </tr>
+
+<div class="overflow-x-auto">
+  <table class="w-full border-collapse shadow-sm rounded-lg overflow-hidden">
+    <thead class="bg-gray-100 text-sm text-gray-600">
+      <tr>
+        <th class="px-4 py-3 text-left">ID</th>
+        <th class="px-4 py-3 text-left">Nombre</th>
+        <th class="px-4 py-3 text-left">Fecha</th>
+        <th class="px-4 py-3 text-left">Descripción</th>
+        <th class="px-4 py-3 text-left">Acciones</th>
+      </tr>
     </thead>
-    <tbody>
-        @for(element of itemResource.value()!;track element._id){
-        <tr  >
-            <td [class.inhabilitar]="!element.estado">{{element._id}}</td>
-            <td [class.inhabilitar]="!element.estado">{{element.actividad}}</td>
-            <td [class.inhabilitar]="!element.estado">{{element.fecha}}</td>
-            <td [class.inhabilitar]="!element.estado">{{element.descripcion}}</td>
-                {{element.estado}}
-            <td>
-                @if(element.estado){
-                <button (click)="edit(element)" mat-icon-button>
-                    <mat-icon>edit</mat-icon>
-                </button>
-                <button (click)="delete(element)" mat-icon-button>
-                    <mat-icon>delete</mat-icon>
-                </button>
-                }
-                @else{
-                    <button (click)="habilitar(element)" mat-icon-button>
-                        <mat-icon>undo</mat-icon>
-                    </button>
-                }
-            </td>
-
+    <tbody class="bg-white text-sm">
+      @for(element of itemResource.value()!;track element._id){
+        <tr class="border-b hover:bg-gray-50 transition">
+          <td [class.inhabilitar]="!element.estado" class="px-4 py-2">{{element._id}}</td>
+          <td [class.inhabilitar]="!element.estado" class="px-4 py-2">{{element.actividad}}</td>
+          <td [class.inhabilitar]="!element.estado" class="px-4 py-2">{{element.fecha}}</td>
+          <td [class.inhabilitar]="!element.estado" class="px-4 py-2">{{element.descripcion}}</td>
+          <td class="px-4 py-2 flex gap-2">
+            @if(element.estado){
+              <button (click)="edit(element)" mat-icon-button class="text-blue-500 hover:text-blue-700 transition">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button (click)="delete(element)" mat-icon-button class="text-red-500 hover:text-red-700 transition">
+                <mat-icon>delete</mat-icon>
+              </button>
+            }
+            @else{
+              <button (click)="habilitar(element)" mat-icon-button class="text-yellow-500 hover:text-yellow-700 transition">
+                <mat-icon>undo</mat-icon>
+              </button>
+            }
+          </td>
         </tr>
-        }
+      }
     </tbody>
-</table>
-<mat-paginator [length]="total()||0"
-    [pageSize]="size()"
-    [pageSizeOptions]="[5,10,20]"
-    (page)="onPageChange($event)"
->
+  </table>
+</div>
 
-</mat-paginator>
+<mat-paginator [length]="total() || 0" [pageSize]="size()" [pageSizeOptions]="[5,10,20]" (page)="onPageChange($event)" class="mt-6"></mat-paginator>
+
 @if(isLoading()){
-<mat-spinner></mat-spinner>
+  <div class="flex justify-center mt-6">
+    <mat-spinner></mat-spinner>
+  </div>
 }

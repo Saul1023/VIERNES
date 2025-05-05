@@ -1,25 +1,19 @@
-
-<div 
-[class.success]="estado === StatusMessage.Success"
-[class.error]="estado === StatusMessage.Error"
-[class.warning]="estado === StatusMessage.Warning"
-[class.info]="estado === StatusMessage.Info"
+<div
+  [class.success]="estado === StatusMessage.Success"
+  [class.error]="estado === StatusMessage.Error"
+  [class.warning]="estado === StatusMessage.Warning"
+  [class.info]="estado === StatusMessage.Info"
 >
-<span class="" matSnackBarLabel>
-    {{msg}}
+  <span matSnackBarLabel>
+    {{ msg }}
   </span>
+
   <span matSnackBarActions>
     <button mat-button matSnackBarAction (click)="snackBarRef.dismissWithAction()">
-        @if(estado == StatusMessage.Success){
-        <mat-icon class="icon" aria-hidden="false" aria-label="notificacion" fontIcon="check"></mat-icon>
-        }@else if(estado == StatusMessage.Warning){
-        <mat-icon aria-hidden="false" aria-label="notificacion" fontIcon="warning"></mat-icon>
-        }@else if(estado == StatusMessage.Error){
-        <mat-icon aria-hidden="false" aria-label="notificacion" fontIcon="error"></mat-icon>
-        }@else if(estado == StatusMessage.Info){
-        <mat-icon aria-hidden="false" aria-label="notificacion" fontIcon="exclamation"></mat-icon>
-        }
+      <mat-icon *ngIf="estado === StatusMessage.Success" fontIcon="check"></mat-icon>
+      <mat-icon *ngIf="estado === StatusMessage.Warning" fontIcon="warning"></mat-icon>
+      <mat-icon *ngIf="estado === StatusMessage.Error" fontIcon="error"></mat-icon>
+      <mat-icon *ngIf="estado === StatusMessage.Info" fontIcon="info"></mat-icon>
     </button>
   </span>
-
 </div>

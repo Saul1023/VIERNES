@@ -11,10 +11,15 @@ import { sign } from 'crypto';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {MatPaginatorModule, PageEvent} from '@angular/material/paginator';
 import { PartidoService } from './partido.service';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { CommonModule } from '@angular/common';
 export interface Partido{
     _id?:string,
     nombre?:string,
-    lema?: string
+    lema?: string,
+    foto?:string,
 }
 @Component({
   selector: 'app-partido',
@@ -25,7 +30,12 @@ export interface Partido{
     MatDialogModule,
     ReactiveFormsModule,
     MatPaginatorModule,
-
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule,
+    MatTooltipModule,
+    MatProgressSpinnerModule,
+    CommonModule
   ],
   templateUrl: './partido.component.html',
   styleUrl: './partido.component.css'
@@ -122,8 +132,10 @@ export class PartidoComponent /*implements OnInit */{
   }
   nuevo(){
     this.item={
-      _id:'',nombre:'',lema:''
+      _id:'',nombre:'',lema:'',foto:''
     }
     this.openDialog(this.item);
   }
+///PAGINACION
+
 }

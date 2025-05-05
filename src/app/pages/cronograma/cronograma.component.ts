@@ -68,9 +68,8 @@ export class CronogramaComponent /*implements OnInit */{
           map((response: any) => {
             this.loading.set(false);
             this.total.set(response.data.total);
-            // Verifica si los datos están estructurados correctamente
-            console.log(response.data.data); // Debería mostrar el array de cronogramas
-            return response.data.data; // Devuelve los cronogramas
+            console.log(response.data.data); 
+            return response.data.data; 
           })
         );
     }

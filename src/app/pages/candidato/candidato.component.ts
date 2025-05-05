@@ -13,7 +13,9 @@ import { CandidatoService } from './candidato.service';
 import { FormCandidatoComponent } from './form-candidato/form-candidato.component';
 import { CommonModule } from '@angular/common';
 import { RxLet } from '@rx-angular/template/let';
-
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import {MatTooltipModule} from '@angular/material/tooltip';
 export interface Candidato{
     _id?:string,
     nombre?:string,
@@ -22,6 +24,8 @@ export interface Candidato{
     puesto?:string,
     fechaNacimiento?:string,
     partidoId?:string,
+    estado?:number,
+    foto?:string,
 }
 @Component({
   selector: 'app-candidato',
@@ -33,29 +37,31 @@ export interface Candidato{
     MatDialogModule,
     ReactiveFormsModule,
     MatPaginatorModule,
-    RxLet
-
+    RxLet,
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule,
+    MatTooltipModule,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './candidato.component.html',
   styleUrl: './candidato.component.css'
 })
 export class CandidatoComponent{
-  constructor() {
-  }
+
   search = new FormControl('');
   searchTerm = signal('')
   searchComp$ =computed(() => this.searchTerm())
-
   itemService = inject(CandidatoService);
   loading = signal(false);
   isLoading = computed(()=>this.loading());
   dialog = inject(MatDialog);
   item:Candidato= {};
   error = signal<string>('');
-
   page = signal(0)
   size = signal(10);
   total = signal(0);
+
   onPageChange(event:PageEvent){
     this.page.set(event.pageIndex);
     this.size.set(event.pageSize);
@@ -72,84 +78,72 @@ export class CandidatoComponent{
   itemResource = rxResource({
     loader: () => {
       this.loading.set(true);
-      console.log('Cargando candidatos...');
-      return this.itemService.getAll(
-        this.page(), this.size(), this.searchTerm()
-      ).pipe(
+      return this.itemService.getAll(this.page(), this.size(), this.searchTerm()).pipe(
         map((response: any) => {
           this.loading.set(false);
-          this.total.set(response.data.totalCount);  // Usar totalCount en lugar de 'total'
-          console.log(response.data.items);  // Acceder a items
-          return response.data.items;  // Asegurarte de retornar items
+          this.total.set(response.data.totalCount);
+          return response.data.items;
         })
       );
     }
   });
-  delete(item:any){
-    const confirm = this.dialog.open(DialogConfirmComponent,{})
-    confirm.afterClosed().subscribe(resulta=>{
-      if(resulta){
-        this.itemService.delete(item._id).subscribe(
-          (res:any)=>{
-            if(res.status=='success')
-              this.itemResource.reload();
-            else
-              this.error.set(res.message);
-          }
-        );
+
+  delete(item: any) {
+    const confirm = this.dialog.open(DialogConfirmComponent, {});
+    confirm.afterClosed().subscribe(result => {
+      if (result) {
+        this.itemService.delete(item._id).subscribe((res: any) => {
+          if (res.status == 'success') this.itemResource.reload();
+          else this.error.set(res.message);
+        });
       }
-    })
-    this.itemResource.reload();
+    });
   }
-  habilitar(item:any){
-    const confirm = this.dialog.open(DialogConfirmComponent,{})
-    confirm.afterClosed().subscribe(resulta=>{
-      if(resulta){
-        this.itemService.habilitar(item._id).subscribe(
-          (res:any)=>{
-            if(res.status=='success')
-              this.itemResource.reload();
-            else
-              this.error.set(res.message);
-          }
-        );
+
+  habilitar(item: any) {
+    const confirm = this.dialog.open(DialogConfirmComponent, {});
+    confirm.afterClosed().subscribe(result => {
+      if (result) {
+        this.itemService.habilitar(item._id).subscribe((res: any) => {
+          if (res.status == 'success') this.itemResource.reload();
+          else this.error.set(res.message);
+        });
       }
-    })
-    this.itemResource.reload();
+    });
   }
-  openDialog(data:any){
+
+  openDialog(data: any) {
+    if (data.fechaNacimiento) {
+      data.fechaNacimiento = this.convertirFecha(data.fechaNacimiento);
+    }
     this.item = data;
-    const nuevoForm = this.dialog.open(FormCandidatoComponent,{
-      data:this.item
-    })
-    nuevoForm.afterClosed().subscribe(resulta=>{
-      if(resulta)
-        this.itemResource.reload();
-    })
-    this.itemResource.reload();
+    const dialogRef = this.dialog.open(FormCandidatoComponent, {
+      data: this.item
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) this.itemResource.reload();
+    });
   }
-  edit(item:any){
+
+  edit(item: any) {
     this.openDialog(item);
   }
-  nuevo(){
-    this.item={
-      _id:'',nombre:'',apellido:'',biografia:'',puesto:'',fechaNacimiento:''
-    }
+
+  nuevo() {
+    this.item = {
+      _id: '',
+      nombre: '',
+      apellido: '',
+      biografia: '',
+      puesto: '',
+      fechaNacimiento: ''
+    };
     this.openDialog(this.item);
   }
-  convertirFecha(fechaNacimiento: string): string {
-    const partes = fechaNacimiento.split('-'); // Dividir la fechaNacimiento por el guion
-    return `${partes[2]}-${partes[1]}-${partes[0]}`; // Reordenar a YYYY-MM-DD
+
+  convertirFecha(fecha: string): string {
+    const date = new Date(fecha);
+    return !isNaN(date.getTime()) ? date.toISOString().split('T')[0] : fecha;
   }
 
-  // Método para guardar los datos después de convertir la fechaNacimiento
-  enviarFormulario() {
-    if (this.item.fechaNacimiento) {
-      this.item.fechaNacimiento = this.convertirFecha(this.item.fechaNacimiento);
-    }
-
-    // Aquí puedes hacer el envío del formulario
-    console.log('Formulario enviado:', this.item);
-    // Llamar al servicio para guardar la información del candidato
-  }
 }

@@ -4,7 +4,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
 import { Router } from '@angular/router';
-
+import { CommonModule } from '@angular/common';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatButton } from '@angular/material/button';
 import {MatSnackBar, MatSnackBarModule} from '@angular/material/snack-bar';
@@ -13,6 +13,7 @@ import { CandidatoService } from '../candidato.service';
 import { Candidato } from '../candidato.component';
 import { PartidoService } from '../../partido/partido.service';
 import { MatSelectModule } from '@angular/material/select';
+import { Partido } from '../../partido/partido.component';
 @Component({
   selector: 'app-form-unidad',
   imports: [
@@ -21,96 +22,103 @@ import { MatSelectModule } from '@angular/material/select';
     ReactiveFormsModule,
     MatButton,
     MatSnackBarModule,
-    MatSelectModule
+    MatSelectModule,
+    CommonModule
   ],
   templateUrl: './form-candidato.component.html',
   styleUrl: './form-candidato.component.css'
 })
-//78189313 cbba
+
 export class FormCandidatoComponent {
+  partidos: Partido[] = [];
+  partidoSeleccionado: string = '';
 
-  constructor() {
-    // Cargar los partidos al inicializar el componente
-    this.partidoService.getAll(0, 1000).subscribe({
-      next: (res: any) => {
-        this.partidos.set(res.data || res); // ajusta según la estructura real del backend
-      },
-      error: (err) => {
-        this.showMsg('Error al cargar partidos', StatusMessage.Error);
-        console.error('Error al obtener partidos:', err);
-      }
-    });
-  }
-
-
-  partidoService = inject(PartidoService); // después de inyectar tus servicios
-  partidos = signal<{ _id: string, nombre: string }[]>([]);
-  private _snackBar = inject(MatSnackBar);
+  partidoService = inject(PartidoService);
+  _snackBar = inject(MatSnackBar);
   fb = inject(NonNullableFormBuilder);
   itemService = inject(CandidatoService);
   router = inject(Router);
   msg = signal('');
   readonly item = inject<Candidato>(MAT_DIALOG_DATA);
-  //valiar
-  form = this.fb.group<{
-    nombre: FormControl<string>,
-    apellido: FormControl<string>,
-    biografia: FormControl<string>,
-    puesto: FormControl<string>,
-    fechaNacimiento: FormControl<string>, // nuevo campo fechaNacimiento si no lo tienes aún
-    partidoId: FormControl<string> // nuevo campo partidoId
-  }>({
-    nombre: this.fb.control(this.item.nombre ?? '', Validators.required),
-    apellido: this.fb.control(this.item.apellido ?? '', Validators.required),
-    biografia: this.fb.control(this.item.biografia ?? '', Validators.required),
-    puesto: this.fb.control(this.item.puesto ?? '', Validators.required),
-    fechaNacimiento: this.fb.control(this.item.fechaNacimiento ?? ''),
-    partidoId: this.fb.control(this.item.partidoId ?? '')
+  readonly dialog = inject(MatDialogRef<FormCandidatoComponent>);
+
+  form = this.fb.group({
+    nombre: this.fb.control(this.item?.nombre ?? '', Validators.required),
+    apellido: this.fb.control(this.item?.apellido ?? '', Validators.required),
+    biografia: this.fb.control(this.item?.biografia ?? '', Validators.required),
+    puesto: this.fb.control(this.item?.puesto ?? '', Validators.required),
+    fechaNacimiento: this.fb.control(this.item?.fechaNacimiento ?? ''),
+    partidoId: this.fb.control(this.item?.partidoId ?? ''),
+    foto: this.fb.control(this.item?.foto ?? '')
   });
-  readonly dialog =   inject(MatDialogRef<FormCandidatoComponent>)
+
+  ngOnInit(): void {
+    this.partidoService.getAll().subscribe({
+      next: (response: any) => {
+        console.log('Respuesta del servicio:', response);
+        this.partidos = response?.data?.item || response?.item || [];
+      },
+      error: (err) => {
+        console.error('Error al cargar partidos:', err);
+        this.showMsg('Error al cargar partidos', StatusMessage.Error);
+      }
+    });
+  }
 
   enviar() {
-    let itemNew = this.form.getRawValue();
-    if (this.item._id) {
-      // Editar
-      this.itemService.edit(this.item._id, itemNew).subscribe({
-        next: (res: any) => {
-          if (res.status == "success") {
-            this.showMsg('Datos guardados correctamente', StatusMessage.Success, { duration: 4000 });
-            this.dialog.close(true);
-          } else {
-            this.showMsg(res.message, StatusMessage.Error);
-            this.msg.set(res.message);
-          }
-        },
-        error: err => {
-          this.showMsg(err.error.message, StatusMessage.Error);
-          this.msg.set(err.error.message);
-        }
-      });
-    } else {
-      // Nuevo
-      this.itemService.create(itemNew).subscribe({
-        next: (res: any) => {
-          if (res.status == "success") {
-            this.showMsg('Se guardó los datos!!!', StatusMessage.Success, { duration: 4000 });
-            this.dialog.close(true);
-          } else {
-            this.showMsg(res.message, StatusMessage.Error);
-            this.msg.set(res.message);
-          }
-        },
-        error: err => {
-          this.showMsg(err.error.message, StatusMessage.Error);
-          this.msg.set(err.error.message);
-        }
-      });
+    if (this.form.invalid) {
+      this.showMsg('Formulario inválido. Complete los campos requeridos.', StatusMessage.Warning);
+      return;
     }
+
+    const itemNew = { ...this.form.getRawValue() };
+
+    if (itemNew.fechaNacimiento) {
+      itemNew.fechaNacimiento = this.convertirFechaISO(itemNew.fechaNacimiento);
+    }
+
+    const esEdicion = !!this.item?._id; // ✅ Asegura booleano
+    const operacion = esEdicion
+    ? this.itemService.edit(this.item._id!, itemNew)
+      : this.itemService.create(itemNew);
+
+    operacion.subscribe({
+      next: (res: any) => {
+        console.log('Respuesta del servidor:', res);
+        if (res?.success || res?.status === 'success') {
+          this.showMsg(`Candidato ${esEdicion ? 'actualizado' : 'registrado'} correctamente`, StatusMessage.Success, { duration: 4000 });
+          this.dialog.close(true);
+        } else {
+          const message = res?.message || `Error al ${esEdicion ? 'actualizar' : 'registrar'} candidato`;
+          this.showMsg(message, StatusMessage.Error);
+          this.msg.set(message);
+        }
+      },
+      error: (err) => {
+        console.error(`Error al ${esEdicion ? 'actualizar' : 'registrar'} candidato:`, err);
+        this.showMsg(`Error al ${esEdicion ? 'actualizar' : 'registrar'} candidato`, StatusMessage.Error);
+      }
+    });
   }
-  showMsg(msg:string,status:StatusMessage,optional={}){
-    let notificar = this._snackBar.openFromComponent(NotificarComponent,
-      optional);
-            notificar.instance.msg = msg;
-            notificar.instance.estado = status;
+
+  showMsg(msg: string, status: StatusMessage, config: any = {}) {
+    const notificar = this._snackBar.openFromComponent(NotificarComponent, config);
+    notificar.instance.msg = msg;
+    notificar.instance.estado = status;
+  }
+
+  convertirFechaISO(fecha: string): string {
+    if (/^\d{4}-\d{2}-\d{2}$/.test(fecha)) return fecha;
+    const partes = fecha.includes('/') ? fecha.split('/') : fecha.split('-');
+    if (partes.length === 3) {
+      const [dia, mes, anio] = partes;
+      return `${anio}-${mes.padStart(2, '0')}-${dia.padStart(2, '0')}`;
+    }
+    return fecha;
+  }
+
+  limpiarFormulario() {
+    this.form.reset();
+    this.partidoSeleccionado = '';
   }
 }
