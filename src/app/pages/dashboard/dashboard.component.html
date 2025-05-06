@@ -2,13 +2,14 @@
 
   <!-- Menú horizontal superior que ocupa todo el ancho -->
   <nav class="top-menu">
-    <div class="logo">
-      ELECCIONES 2025
+    <div class="logo flex items-center gap-2">
+      <img src="/assets/escudo.png" alt="Escudo" class="w-8 h-8">
+      <span class="font-bold text-lg">ELECCIONES 2025</span>
       <svg width="24" height="24" viewBox="0 0 24 24">
-        <!-- Ejemplo de un path válido: una línea -->
         <path d="M12 2L12 22" />
       </svg>
     </div>
+
     <ul class="menu-links">
       <li><a routerLink="/dashboard/partido" routerLinkActive="activelink">Partido</a></li>
       <li><a routerLink="/dashboard/candidato" routerLinkActive="activelink">Candidato</a></li>
