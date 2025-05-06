@@ -4,7 +4,7 @@
     <mat-icon>add</mat-icon>
   </button>
 
-  <input matInput [formControl]="search" name="search" (input)="buscar($event)" 
+  <input matInput [formControl]="search" name="search" (input)="buscar($event)"
     class="border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-64" placeholder="Buscar...">
 </div>
 
@@ -15,7 +15,6 @@
 <table class="table-auto w-full border-collapse bg-white shadow-md rounded-lg">
   <thead class="bg-gray-100">
     <tr>
-      <th class="py-2 px-4 text-left text-sm font-medium text-gray-600">Id</th>
       <th class="py-2 px-4 text-left text-sm font-medium text-gray-600">Titulo</th>
       <th class="py-2 px-4 text-left text-sm font-medium text-gray-600">Descripcion</th>
       <th class="py-2 px-4 text-left text-sm font-medium text-gray-600">Fecha</th>
@@ -24,7 +23,6 @@
   </thead>
   <tbody>
     <tr *ngFor="let element of itemResource.value(); trackBy: track">
-      <td class="py-2 px-4 text-sm text-gray-700" [class.text-gray-400]="!element.estado">{{ element._id }}</td>
       <td class="py-2 px-4 text-sm text-gray-700" [class.text-gray-400]="!element.estado">{{ element.titulo }}</td>
       <td class="py-2 px-4 text-sm text-gray-700" [class.text-gray-400]="!element.estado">{{ element.descripcion }}</td>
       <td class="py-2 px-4 text-sm text-gray-700" [class.text-gray-400]="!element.estado">{{ element.fechaPropuesta }}</td>
@@ -47,7 +45,7 @@
   </tbody>
 </table>
 
-<mat-paginator [length]="total() || 0" [pageSize]="size()" [pageSizeOptions]="[5, 10, 20]" 
+<mat-paginator [length]="total() || 0" [pageSize]="size()" [pageSizeOptions]="[5, 10, 20]"
   (page)="onPageChange($event)" class="my-4 bg-white shadow-md rounded-lg p-2">
 </mat-paginator>
 

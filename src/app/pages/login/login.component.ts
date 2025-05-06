@@ -22,29 +22,31 @@ export class LoginComponent {
   authService = inject(AuthService);
   router = inject(Router);
   msg = signal('');
+
   form = this.fb.group<{
-    email:FormControl<string>,
-    password:FormControl<string>,
+    ci: FormControl<string>,
+    password: FormControl<string>,
   }>({
-    email:this.fb.control('',Validators.required),
-    password:this.fb.control('',Validators.required),
+    ci: this.fb.control('', [Validators.required, Validators.minLength(5)]),
+    password: this.fb.control('', Validators.required),
   });
-  protected onEntrar(){
-    
-      const data = this.form.getRawValue();
-      this.authService.login(data).subscribe({
-         next:(request:any)=>{
-          if(request.status=="success"){
-            this.router.navigate(['/dashboard']);
-            
-            this.authService.saveToken(request.data);
-          }
-         },
-         error:err=>{
-          console.log(err);
-          this.msg.set(err.error.message);
-         }
-      });
-      console.log(data);
+
+  protected onEntrar() {
+    const data = this.form.getRawValue();
+    this.authService.login(data).subscribe({
+      next: (response: any) => {
+        if (response.access_token) {
+          this.authService.setToken(response.access_token);
+          this.router.navigate(['/dashboard']);
+        } else {
+          this.msg.set('Error en la autenticación');
+        }
+      },
+      error: err => {
+        console.log(err);
+        this.msg.set(err.error.message || 'Error al intentar iniciar sesión');
+      }
+    });
   }
+
 }

@@ -11,6 +11,7 @@ import { DialogConfirmComponent } from '../../shared/dialog-confirm/dialog-confi
 import { sign } from 'crypto';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {MatPaginatorModule, PageEvent} from '@angular/material/paginator';
+import { SocketClient } from './socketClient';
 export interface Cronograma{
     _id?:string,
     actividad?:string,
@@ -47,6 +48,15 @@ export class CronogramaComponent /*implements OnInit */{
   page = signal(0)
   size = signal(10);
   total = signal(0);
+
+    socket = inject(SocketClient);
+    ngOnInit(): void {
+      this.socket.onActualizarCronograma().subscribe(dato => {
+        console.log('socket: Actualiza datos', dato);
+        this.itemResource.reload();
+      });
+    }
+
   onPageChange(event:PageEvent){
     this.page.set(event.pageIndex);
     this.size.set(event.pageSize);
@@ -68,8 +78,8 @@ export class CronogramaComponent /*implements OnInit */{
           map((response: any) => {
             this.loading.set(false);
             this.total.set(response.data.total);
-            console.log(response.data.data); 
-            return response.data.data; 
+            console.log(response.data.data);
+            return response.data.data;
           })
         );
     }

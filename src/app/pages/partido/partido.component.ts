@@ -15,6 +15,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CommonModule } from '@angular/common';
+import { SocketClient } from './socketClient';
 export interface Partido{
     _id?:string,
     nombre?:string,
@@ -57,6 +58,15 @@ export class PartidoComponent /*implements OnInit */{
   page = signal(0)
   size = signal(10);
   total = signal(0);
+
+  socket = inject(SocketClient);
+  ngOnInit(): void {
+    this.socket.onActualizarPartido().subscribe(dato => {
+      console.log('socket: Actualiza datos', dato);
+      this.itemResource.reload();
+    });
+  }
+
   onPageChange(event:PageEvent){
     this.page.set(event.pageIndex);
     this.size.set(event.pageSize);

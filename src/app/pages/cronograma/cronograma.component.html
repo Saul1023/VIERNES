@@ -26,7 +26,6 @@
   <table class="w-full border-collapse shadow-sm rounded-lg overflow-hidden">
     <thead class="bg-gray-100 text-sm text-gray-600">
       <tr>
-        <th class="px-4 py-3 text-left">ID</th>
         <th class="px-4 py-3 text-left">Nombre</th>
         <th class="px-4 py-3 text-left">Fecha</th>
         <th class="px-4 py-3 text-left">Descripción</th>
@@ -36,7 +35,6 @@
     <tbody class="bg-white text-sm">
       @for(element of itemResource.value()!;track element._id){
         <tr class="border-b hover:bg-gray-50 transition">
-          <td [class.inhabilitar]="!element.estado" class="px-4 py-2">{{element._id}}</td>
           <td [class.inhabilitar]="!element.estado" class="px-4 py-2">{{element.actividad}}</td>
           <td [class.inhabilitar]="!element.estado" class="px-4 py-2">{{element.fecha}}</td>
           <td [class.inhabilitar]="!element.estado" class="px-4 py-2">{{element.descripcion}}</td>

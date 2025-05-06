@@ -37,6 +37,10 @@ export const routes: Routes = [
                 path:'propuesta',
                 loadComponent:() => import('./pages/propuesta/propuesta.component').then(c => c.PropuestaComponent)
             }
+            ,{
+              path:'votacion',
+              loadComponent:() => import('./pages/votacion/votacion.component').then(c => c.VotacionComponent)
+          }
         ]
     },{
         path:'**',

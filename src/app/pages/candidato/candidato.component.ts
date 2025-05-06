@@ -16,6 +16,7 @@ import { RxLet } from '@rx-angular/template/let';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import { SocketClient } from './socketClient';
 export interface Candidato{
     _id?:string,
     nombre?:string,
@@ -61,6 +62,14 @@ export class CandidatoComponent{
   page = signal(0)
   size = signal(10);
   total = signal(0);
+
+  socket = inject(SocketClient);
+  ngOnInit(): void {
+    this.socket.onActualizarCandidato().subscribe(dato => {
+      console.log('socket: Actualiza datos', dato);
+      this.itemResource.reload();
+    });
+  }
 
   onPageChange(event:PageEvent){
     this.page.set(event.pageIndex);
